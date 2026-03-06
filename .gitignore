@@ -1,0 +1,56 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Auto-generated backup (created by auto-updater)
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Local test configs
+*.local.json
+Settings.json
+```
+
+**How to add it:**
+
+1. In your repo click **Add file** → **Create new file**
+2. Name it `.gitignore` (with the dot at the start)
+3. Paste the content above
+4. Commit with message: `Add .gitignore`
+
+---
+
+## Why these specific rules
+
+- **`*.bak`** — the auto-updater creates `.bak` backup files on users' machines, you don't want those accidentally committed if you ever edit locally
+- **`__pycache__/` and `*.pyc`** — Python bytecode files, auto-generated, never need to be in a repo
+- **`.DS_Store`** — Mac system file that gets created in every folder, totally useless in a repo
+- **`Settings.json`** — the plugin reads a local Settings.json for custom configs, you don't want your personal one pushed publicly
+- **`.vscode/` `.idea/`** — editor settings folders, personal to each developer
+
+---
+
+## Final repo structure
+
+After all this your repo will look like:
+```
+alpha-party-window/
+├── .gitignore
+├── LICENSE
+├── README.md
+├── alpha_party_window.py
+├── install.py
+└── version.json

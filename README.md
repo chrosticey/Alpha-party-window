@@ -198,7 +198,8 @@ alpha-party-window/
 ├── install.py              ← one-liner console installer
 ├── version.json            ← version info for auto-updater
 ├── README.md               ← this file
-└── LICENSE                 ← MIT license
+├── LICENSE                 ← MIT license
+└── .gitignore              ← gitignore imports
 ```
 
 ---

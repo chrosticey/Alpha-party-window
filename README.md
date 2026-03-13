@@ -3,7 +3,7 @@
 # 🎉 Alpha Party Window
 ### An upgraded BombSquad party window — built for players, by players.
 
-![Version](https://img.shields.io/badge/version-1.0--alpha-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.1--alpha-blue?style=flat-square)
 ![API](https://img.shields.io/badge/BombSquad%20API-9-orange?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20PC%20%7C%20Mac-lightgrey?style=flat-square)
@@ -147,6 +147,27 @@ Or just delete `alpha_party_window.py` from your mods folder manually.
 
 ---
 
+## ⚠️ Note on Automated Updates
+
+> Updates to **Alpha Party Window** are delivered **automatically** — no manual reinstall required.  
+> Every time BombSquad launches, the plugin silently checks for a newer version and applies it in the background.
+
+If you have made local customizations or prefer to manage updates yourself, you can **opt out** at any time:
+
+1. Open `alpha_party_window.py` in any text editor
+2. Near the top of the file, find:
+   ```python
+   APW_UPDATE_CHECK = True
+   ```
+3. Change it to:
+   ```python
+   APW_UPDATE_CHECK = False
+   ```
+
+With this set to `False`, the plugin will **never modify itself** — you stay on your current version until you manually replace the file.
+
+---
+
 ## 🔄 Auto-Update System
 
 Every time BombSquad starts, the plugin quietly checks for updates in the background:
@@ -217,3 +238,11 @@ Pull requests are welcome! Please:
 
 MIT License — see [LICENSE](LICENSE) for details.  
 Free to use, modify, and share.
+
+---
+
+<div align="center">
+
+*Inspired by **Advanced Party Window** — thank you for setting the standard.*
+
+</div>

@@ -51,13 +51,13 @@ APW_GITHUB_RAW   = "https://raw.githubusercontent.com/chrosticey/Alpha-party-win
 APW_VERSION_URL  = APW_GITHUB_RAW + "/version.json"
 APW_PLUGIN_URL   = APW_GITHUB_RAW + "/alpha_party_window.py"
 APW_UPDATE_CHECK = True
-APW_PREVIEW_UPDATE = False
+APW_PREVIEW_UPDATE = True
 
 _apw_update_state: Dict[str, Any] = {
     "checking": False,
     "checked": True if APW_PREVIEW_UPDATE else False,
     "available": True if APW_PREVIEW_UPDATE else False,
-    "remote_version": "1.3-alpha" if APW_PREVIEW_UPDATE else "",
+    "remote_version": "1.2-alpha" if APW_PREVIEW_UPDATE else "",
     "min_api": 9,
     "changelog": "Preview notification — tap Update to install from GitHub, GitHub to inspect source, or X to hide until next launch." if APW_PREVIEW_UPDATE else "",
     "added": [

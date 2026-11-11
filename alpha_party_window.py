@@ -51,25 +51,16 @@ APW_GITHUB_RAW   = "https://raw.githubusercontent.com/chrosticey/Alpha-party-win
 APW_VERSION_URL  = APW_GITHUB_RAW + "/version.json"
 APW_PLUGIN_URL   = APW_GITHUB_RAW + "/alpha_party_window.py"
 APW_UPDATE_CHECK = True
-APW_PREVIEW_UPDATE = True
 
 _apw_update_state: Dict[str, Any] = {
     "checking": False,
-    "checked": True if APW_PREVIEW_UPDATE else False,
-    "available": True if APW_PREVIEW_UPDATE else False,
-    "remote_version": "1.2-alpha" if APW_PREVIEW_UPDATE else "",
+    "checked": False,
+    "available": False,
+    "remote_version": "",
     "min_api": 9,
-    "changelog": "Preview notification — tap Update to install from GitHub, GitHub to inspect source, or X to hide until next launch." if APW_PREVIEW_UPDATE else "",
-    "added": [
-        "Chat strip animations (Scanner, Equalizer, Wave, Prism)",
-        "Update banner notification & Updates details menu",
-        "Help & Feature Guide menu",
-    ] if APW_PREVIEW_UPDATE else [],
-    "changed": [
-        "Fixed duplicate chats when unmuting players",
-        "Outline color sync toggle & custom Cyber Color Picker",
-        "First Favourite icon syncs to Quick Icons button",
-    ] if APW_PREVIEW_UPDATE else [],
+    "changelog": "",
+    "added": [],
+    "changed": [],
     "download_url": APW_PLUGIN_URL,
     "error": "",
     "dismissed_this_boot": False,
@@ -126,17 +117,6 @@ def _apw_restore_backup():
 
 def _apw_check_and_update(on_checked=None):
     if not APW_UPDATE_CHECK:
-        return
-    if APW_PREVIEW_UPDATE:
-        _apw_update_state["checking"] = False
-        _apw_update_state["checked"] = True
-        if not _apw_update_state.get("installed_pending_restart"):
-            _apw_update_state["available"] = True
-        if callable(on_checked):
-            try:
-                _babase.pushcall(on_checked, from_other_thread=True)
-            except Exception:
-                pass
         return
     _apw_update_state["checking"] = True
     _apw_update_state["error"] = ""

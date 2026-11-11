@@ -1,5 +1,20 @@
 {
-  "version": "1.1-alpha",
+  "version": "1.2-alpha",
   "min_api": 9,
-  "changelog": "Initial release with auto-update and crash recovery support."
+  "added": [
+    "Cyber-Glass tabbed UI (Chat, Roster, Servers) & native Host DocUI integration",
+    "Universal & Romanized translator (Gujarati, Hindi, Arabizi, Russian, CJK & more)",
+    "Quick Icons popup with Favourites bar (Slot #1 sets the bar icon)",
+    "Chat bar animations (Neon Scanner, Synth Equalizer, Pulse Wave, Cyber Prism)",
+    "Custom Command Maker with {cid}, {acc}, {name}, {nick}, {aid}, {me}, {dur}",
+    "Auto Greet (V2/AID keyed), Player Lists manager & dated Chat Logs with rename",
+    "Custom Cyber Color Picker, Outline color sync & Players Under Name toggle",
+    "Update notification banner, Updates changelog window & Help guide"
+  ],
+  "changed": [
+    "Chat navigation & 4-word quoted Reply bar without covering messages",
+    "Unmuting a player restores their hidden session chats cleanly",
+    "Updates only install manually when you click Update"
+  ],
+  "changelog": "Major Cyber-Glass overhaul with translation, animations, custom commands, and manual update controls."
 }

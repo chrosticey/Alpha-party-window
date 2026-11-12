@@ -7,7 +7,7 @@ by @chrosticey
 Upgraded with Clear Glass UI, Interactive Tabs,
 Quick Icons Popup, Universal Translate, and v1.8+ Clean Moderation.
 
-Version : 1.3
+Version : 1.3-alpha
 API     : 9
 '''
 

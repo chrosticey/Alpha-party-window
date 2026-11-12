@@ -3,7 +3,7 @@
 # ⚡ Alpha Party Window
 ### *A sleek, Cyber-Glass Party Window overhaul for BombSquad — fast, expressive, and crafted for players.*
 
-![Version](https://img.shields.io/badge/version-1.2--alpha-00e5ff?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-1.3--alpha-00e5ff?style=for-the-badge)
 ![API](https://img.shields.io/badge/BombSquad%20API-9-ff9100?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-00e676?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20PC%20%7C%20Mac-9e9e9e?style=for-the-badge)

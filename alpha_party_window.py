@@ -875,11 +875,13 @@ def _apw_sync_session_history(extra_msg: Optional[str] = None) -> List[str]:
 
 
 _APW_CHAT_ANIM_MODES = [
-    ("scanner",  "⚡ Neon Scanner"),
-    ("equalizer","🎵 Synth Equalizer"),
-    ("wave",     "🌊 Pulse Wave"),
-    ("spectrum", "🌈 Cyber Prism"),
-    ("off",      "⬜ Off (Static)"),
+    ("scanner",   "⚡ Neon Scanner"),
+    ("equalizer", "🎵 Synth Equalizer"),
+    ("wave",      "🌊 Pulse Wave"),
+    ("spectrum",  "🌈 Cyber Prism"),
+    ("firefly",   "✨ Starlight Glow"),
+    ("matrix",    "💚 Cyber Matrix"),
+    ("off",       "⬜ Off (Static)"),
 ]
 
 
@@ -2335,21 +2337,21 @@ class AlphaPartyWindow(bui.Window):
             border_thickness=1.5,
             on_activate_call=babase.CallPartial(self._switch_tab, "servers"))
 
-        INP_Y = -_hh + 12
+        INP_Y = -_hh + 8
         QUICK_W = 66
         ICON_BTN_W = 40
         SEND_W = 66
-        BTN_H = 34
+        BTN_H = 32
         GAP = 4
 
         self._bottom_dock = _draw_panel_bg(
             parent=self._root_widget,
-            x=LEFT_X, y=INP_Y - 2, w=CONTENT_W, h=BTN_H + 4,
+            x=LEFT_X, y=INP_Y - 3, w=CONTENT_W, h=BTN_H + 6,
             color=(0.01, 0.02, 0.04), opacity=0.55)
 
         self._bottom_borders = _draw_border(
             parent=self._root_widget,
-            x=LEFT_X, y=INP_Y - 2, w=CONTENT_W, h=BTN_H + 4,
+            x=LEFT_X, y=INP_Y - 3, w=CONTENT_W, h=BTN_H + 6,
             color=_OL, opacity=0.55, thickness=1.5)
 
         self._quick_button = GlassButton(
@@ -2441,8 +2443,8 @@ class AlphaPartyWindow(bui.Window):
         self._emoji_buttons: List[GlassButton] = []
         self._emoji_borders = []
 
-        self._full_scroll_bottom = INP_Y + BTN_H + 6
-        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 34
+        self._full_scroll_bottom = INP_Y + BTN_H + 5
+        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 27
         self._scroll_top = TAB_Y - 5
         self._scroll_width = CONTENT_W
 
@@ -2586,6 +2588,35 @@ class AlphaPartyWindow(bui.Window):
                         edit=bw, size=(bar_w, h),
                         position=(getattr(self, '_anim_xs', [])[i], cy),
                         color=(r, g, b), opacity=0.55 + 0.35 * pulse)
+            elif mode == 'firefly':
+                for i, bw in enumerate(bars):
+                    twinkle = 0.5 + 0.5 * math.sin(t * 1.8 + i * 2.1) * math.cos(t * 0.9 - i * 1.3)
+                    h = 3.5 + twinkle * (max_h - 3.5)
+                    cy = base_y + (max_h - h) * (0.3 + 0.4 * math.sin(t * 0.5 + i * 0.7))
+                    col = (
+                        min(1.0, 0.95),
+                        min(1.0, 0.85 + 0.15 * twinkle),
+                        min(1.0, 0.35 + 0.55 * (1.0 - twinkle)),
+                    )
+                    bui.imagewidget(
+                        edit=bw, size=(bar_w, h),
+                        position=(getattr(self, '_anim_xs', [])[i], cy),
+                        color=col, opacity=0.25 + 0.70 * twinkle)
+            elif mode == 'matrix':
+                for i, bw in enumerate(bars):
+                    drop = (t * 1.4 + i * 0.42) % 3.0
+                    intensity = max(0.0, 1.0 - drop)
+                    h = 4.0 + intensity * (max_h - 4.0)
+                    cy = base_y + (max_h - h) * 0.5
+                    col = (
+                        min(1.0, 0.10 + 0.20 * intensity),
+                        min(1.0, 0.60 + 0.40 * intensity),
+                        min(1.0, 0.25 + 0.20 * intensity),
+                    )
+                    bui.imagewidget(
+                        edit=bw, size=(bar_w, h),
+                        position=(getattr(self, '_anim_xs', [])[i], cy),
+                        color=col, opacity=0.20 + 0.78 * intensity)
         except Exception:
             pass
 
@@ -2595,35 +2626,36 @@ class AlphaPartyWindow(bui.Window):
             return
         ol = getattr(self, '_outline_color', (0.4, 1.0, 0.5))
         t_on = _apw_get_translate_cfg()["enabled"]
-        nw = 194
-        nh = 24
-        nx = self._right_x - nw - 6
-        ny = self._full_scroll_bottom + 6
 
-        ax = self._left_x + 6
-        aw = max(40, (nx - 6) - ax)
+        # 1. Full-width horizontal bottom animation strip (spanning across above the bottom dock)
+        anim_h = 20
+        anim_y = self._full_scroll_bottom + 3
+        anim_x = self._left_x + 2
+        anim_w = self._content_w - 4
         anim_mode = _apw_get_chat_anim_style()
-        abg = _draw_panel_bg(self._root_widget, ax, ny, aw, nh, color=(0.02, 0.04, 0.07), opacity=0.65)
-        abdrs = _draw_border(self._root_widget, ax, ny, aw, nh, color=ol, opacity=0.38 if anim_mode != 'off' else 0.22, thickness=1.0)
+
+        abg = _draw_panel_bg(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=(0.02, 0.04, 0.07), opacity=0.65)
+        abdrs = _draw_border(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=ol, opacity=0.38 if anim_mode != 'off' else 0.22, thickness=1.0)
         self._anim_widgets.append(abg)
         self._anim_widgets.extend(abdrs)
         self._anim_track_borders = list(abdrs)
         self._anim_bars = []
         self._anim_xs = []
-        if anim_mode != 'off' and aw >= 60:
-            cnt_bars = 14
+
+        if anim_mode != 'off' and anim_w >= 80:
+            cnt_bars = 22
             pad_x = 8.0
-            gap_x = 4.0
-            bar_w = max(4.0, (aw - pad_x * 2 - (cnt_bars - 1) * gap_x) / cnt_bars)
+            gap_x = 3.5
+            bar_w = max(3.5, (anim_w - pad_x * 2 - (cnt_bars - 1) * gap_x) / cnt_bars)
             self._anim_bar_w = bar_w
-            self._anim_base_y = ny + 4.0
+            self._anim_base_y = anim_y + 3.0
             self._anim_phase = getattr(self, '_anim_phase', 0.0)
             for i in range(cnt_bars):
-                bx = ax + pad_x + i * (bar_w + gap_x)
+                bx = anim_x + pad_x + i * (bar_w + gap_x)
                 self._anim_xs.append(bx)
                 img = bui.imagewidget(
                     parent=self._root_widget,
-                    position=(bx, ny + 4.0),
+                    position=(bx, anim_y + 3.0),
                     size=(bar_w, 10.0),
                     texture=bui.gettexture('softRect'),
                     color=ol,
@@ -2633,43 +2665,61 @@ class AlphaPartyWindow(bui.Window):
             self._step_chat_anim()
             self._anim_timer = babase.AppTimer(0.09, babase.WeakCallStrict(self._step_chat_anim), repeat=True)
 
-        bg = _draw_panel_bg(self._root_widget, nx, ny, nw, nh, color=(0.02, 0.04, 0.07), opacity=0.84)
-        bdrs = _draw_border(self._root_widget, nx, ny, nw, nh, color=ol, opacity=0.65, thickness=1.1)
-        self._chat_nav_widgets.append(bg)
-        self._chat_nav_widgets.extend(bdrs)
+        # 2. Side Floating Action Deck (Docked externally to the right of the window)
+        # Keeps navigation, copy, reply and auto-translate completely away from the Send button
+        side_w = 42
+        side_h = 160
+        side_x = self._right_x + 5
+        side_y = self._full_scroll_bottom + 12
 
-        btn_h = nh - 4
-        btn_y = ny + 2
+        s_bg = _draw_panel_bg(self._root_widget, side_x, side_y, side_w, side_h, color=(0.04, 0.06, 0.10), opacity=0.88)
+        s_bdrs = _draw_border(self._root_widget, side_x, side_y, side_w, side_h, color=ol, opacity=0.72, thickness=1.2)
+        self._chat_nav_widgets.append(s_bg)
+        self._chat_nav_widgets.extend(s_bdrs)
+
+        sb_w = side_w - 6
+        sb_h = 26
+        sb_x = side_x + 3
+        # Vertical stack from top to bottom: ▲, ▼, 🌐, Copy, Reply
+        by_up = side_y + side_h - 30
+        by_dn = side_y + side_h - 60
+        by_tr = side_y + side_h - 90
+        by_cp = side_y + side_h - 122
+        by_rp = side_y + side_h - 154
 
         up_gb = GlassButton(
-            parent=self._root_widget, position=(nx + 3, btn_y), size=(26, btn_h),
-            label='▲', text_scale=0.50, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
-            text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.60, border_thickness=1.0,
+            parent=self._root_widget, position=(sb_x, by_up), size=(sb_w, sb_h),
+            label='▲', text_scale=0.55, bg_color=(0.10, 0.16, 0.24), opacity=0.60,
+            text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.65, border_thickness=1.0,
             on_activate_call=babase.CallPartial(self._nav_chat_msg, -1))
         dn_gb = GlassButton(
-            parent=self._root_widget, position=(nx + 32, btn_y), size=(26, btn_h),
-            label='▼', text_scale=0.50, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
-            text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.60, border_thickness=1.0,
+            parent=self._root_widget, position=(sb_x, by_dn), size=(sb_w, sb_h),
+            label='▼', text_scale=0.55, bg_color=(0.10, 0.16, 0.24), opacity=0.60,
+            text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.65, border_thickness=1.0,
             on_activate_call=babase.CallPartial(self._nav_chat_msg, 1))
         tr_gb = GlassButton(
-            parent=self._root_widget, position=(nx + 61, btn_y), size=(30, btn_h),
-            label='🌐', text_scale=0.52,
+            parent=self._root_widget, position=(sb_x, by_tr), size=(sb_w, sb_h),
+            label='🌐', text_scale=0.54,
             bg_color=(0.12, 0.38, 0.24) if t_on else (0.10, 0.14, 0.20),
-            opacity=0.72 if t_on else 0.48,
+            opacity=0.75 if t_on else 0.52,
             text_color=(0.70, 1.0, 0.80) if t_on else (0.72, 0.82, 0.92),
             border=True, border_color=ol if t_on else (0.45, 0.65, 0.85),
-            border_opacity=0.85 if t_on else 0.50, border_thickness=1.0,
+            border_opacity=0.88 if t_on else 0.55, border_thickness=1.0,
             on_activate_call=self._toggle_whole_chat_translate)
         cp_gb = GlassButton(
-            parent=self._root_widget, position=(nx + 94, btn_y), size=(46, btn_h),
-            label='Copy', text_scale=0.48, bg_color=(0.12, 0.24, 0.36), opacity=0.55,
-            text_color=(0.85, 0.95, 1.0), border=True, border_color=(0.45, 0.80, 1.0), border_opacity=0.70, border_thickness=1.0,
+            parent=self._root_widget, position=(sb_x, by_cp), size=(sb_w, sb_h),
+            label='Copy', text_scale=0.44, bg_color=(0.12, 0.24, 0.36), opacity=0.60,
+            text_color=(0.85, 0.95, 1.0), border=True, border_color=(0.45, 0.80, 1.0), border_opacity=0.75, border_thickness=1.0,
             on_activate_call=self._copy_selected_chat_msg)
         rp_gb = GlassButton(
-            parent=self._root_widget, position=(nx + 143, btn_y), size=(48, btn_h),
-            label='Reply', text_scale=0.48, bg_color=(0.12, 0.32, 0.22), opacity=0.55,
-            text_color=(0.85, 1.0, 0.88), border=True, border_color=ol, border_opacity=0.75, border_thickness=1.0,
+            parent=self._root_widget, position=(sb_x, by_rp), size=(sb_w, sb_h),
+            label='Reply', text_scale=0.44, bg_color=(0.12, 0.32, 0.22), opacity=0.60,
+            text_color=(0.85, 1.0, 0.88), border=True, border_color=ol, border_opacity=0.80, border_thickness=1.0,
             on_activate_call=self._reply_selected_chat_msg)
+
+        self._chat_nav_widgets.extend([up_gb, dn_gb, tr_gb, cp_gb, rp_gb])
+        self._chat_auto_trans_gb = tr_gb
+        self._chat_nav_label = None
 
         self._chat_nav_widgets.extend([up_gb, dn_gb, tr_gb, cp_gb, rp_gb])
         self._chat_auto_trans_gb = tr_gb
@@ -3350,10 +3400,10 @@ class AlphaPartyWindow(bui.Window):
                 cols = 1 if n <= 1 else (2 if n == 2 else 3)
                 rows = max(1, math.ceil(n / cols)) if n > 0 else 1
                 row_h = 20
-                box_h = rows * row_h + 6
+                box_h = rows * row_h + 4
                 top_y = hy - 4
                 box_y = top_y - box_h
-                extra_h = box_h + 4
+                extra_h = box_h + 1
 
                 self._header_players_box_bg = _draw_panel_bg(
                     parent=self._root_widget,
@@ -3612,28 +3662,14 @@ class AlphaPartyWindow(bui.Window):
                 on_activate_call=babase.CallPartial(self._on_party_member_press, cid, is_host, row))
 
     def _on_player_name_press(self, client_id: int, is_host: bool, widget: Optional[bui.Widget] = None) -> None:
-        """Triggered when tapping a player's name in Roster: offers Kick Vote (or host DocUI if present)."""
+        """Triggered when tapping a player's name in Roster: shows a popup with the Kick Vote option."""
         origin = widget if widget is not None else self._root_widget
-        try:
-            classic = bui.app.classic
-            if classic is not None and hasattr(classic, 'host_ui'):
-                browse = classic.host_ui.get_client_page_browse(client_id)
-                if browse is None and hasattr(classic.host_ui, 'get_client_page'):
-                    browse = classic.host_ui.get_client_page(client_id)
-                if browse is not None:
-                    from bauiv1lib.hostdocui import show_host_docui_page
-                    show_host_docui_page(browse, origin_widget=origin)
-                    self.close()
-                    return
-        except Exception:
-            pass
-
         self._popup_party_member_client_id = client_id
         self._popup_party_member_is_host = is_host
         self._popup_type = "partyMemberNamePress"
 
         is_fg_host = (bs.get_foreground_host_session() is not None)
-        kick_label = "👢 Kick Player" if is_fg_host else "🗳️ Kick Vote"
+        kick_label = "Kick Player" if is_fg_host else "Kick Vote"
 
         AlphaPopupMenu(
             position=origin.get_screen_space_center(),
@@ -3684,21 +3720,20 @@ class AlphaPartyWindow(bui.Window):
             babase.print_exception("[APW] Kick vote execution error")
 
     def _on_header_player_press(self, client_id: int, is_host: bool, widget: Optional[bui.Widget] = None) -> None:
-        """Click handler for names under Party Name: opens native Host DocUI if offered, else Actions."""
-        try:
-            classic = bui.app.classic
-            if classic is not None and hasattr(classic, 'host_ui'):
-                browse = classic.host_ui.get_client_page_browse(client_id)
-                if browse is None and hasattr(classic.host_ui, 'get_client_page'):
-                    browse = classic.host_ui.get_client_page(client_id)
-                if browse is not None:
-                    from bauiv1lib.hostdocui import show_host_docui_page
-                    show_host_docui_page(browse, origin_widget=widget)
-                    self.close()
-                    return
-        except Exception:
-            babase.print_exception("[APW] Header player DocUI open failed")
-        self._on_party_member_press(client_id, is_host, widget if widget is not None else self._root_widget)
+        """Click handler for names under Party Name: opens popup showing Kick Vote option."""
+        origin = widget if widget is not None else self._root_widget
+        self._popup_party_member_client_id = client_id
+        self._popup_party_member_is_host = is_host
+        self._popup_type = "partyMemberNamePress"
+
+        is_fg_host = (bs.get_foreground_host_session() is not None)
+        kick_label = "Kick Player" if is_fg_host else "Kick Vote"
+
+        AlphaPopupMenu(
+            position=origin.get_screen_space_center(),
+            choices=["kick_vote"],
+            choices_display=[babase.Lstr(value=kick_label)],
+            current_choice="kick_vote", delegate=self)
 
     def _on_player_info_press(self, client_id: int, widget: Optional[bui.Widget] = None) -> None:
         """Open BombSquad 1.8+ Host DocUI Player Page directly; fall back cleanly on older hosts."""
@@ -4173,7 +4208,7 @@ class AlphaPartyWindow(bui.Window):
         in_ag = _apw_find_autogreet_key(aid, account, ag_map) is not None
 
         is_fg_host = (bs.get_foreground_host_session() is not None)
-        kick_label = "👢 Kick Player" if is_fg_host else "🗳️ Kick Vote"
+        kick_label = "Kick Player" if is_fg_host else "Kick Vote"
 
         choices = ["kick_vote", "@ this guy", "mute_chat", "set_nick", "toggle_autogreet", "complaint"]
         choices_display = [
@@ -7015,20 +7050,20 @@ class AlphaPartyWindow(bui.Window):
         col = bui.columnwidget(parent=scroll, border=0, margin=4)
 
         sections = [
-            ("💬 Chat, Selection & 4-Word Reply",
+            ("💬 Chat, Selection & Side Action Bar",
              "Tap any message to Translate / Revert, Copy, or Reply (quotes first 4 words).\n"
-             "Tap a selected chat again to deselect it, or use ▲ / ▼ / Copy / Reply at bottom-right."),
+             "Tap a selected chat again to deselect it, or use the floating side action bar (▲ / ▼ / 🌐 / Copy / Reply) on the right."),
             ("⚡ Quick Replies, Icons & ⭐ Favourites",
              "Tap Quick for phrases or ➕ Add / Manage Quick Replies to add, delete & reset replies.\n"
              "Tap the Icon button beside Quick for ⭐ Favourites (Slot #1 sets the button icon)."),
             ("🌐 Universal & Romanized Translate",
-             "Tap 🌐 next to Reply to toggle whole-chat translation, or translate one chat via tap.\n"
+             "Tap 🌐 on the right side dock to toggle whole-chat translation, or translate one chat via tap.\n"
              "Settings -> Translate sets From (left) & Into (right), including Romanized chat."),
             ("✨ Chat Bar Animations & Colors",
-             "Settings -> Chat Bar Anim picks Neon Scanner, Synth Equalizer, Pulse Wave, Prism or Off.\n"
+             "Settings -> Chat Bar Anim picks Neon Scanner, Synth Equalizer, Pulse Wave, Cyber Prism, Starlight Glow, Cyber Matrix, or Off.\n"
              "Settings -> Colors sets Window presets, Sync Outlines toggle, Roster/Nick colors & Colorful Chat."),
             ("👥 Roster Controls, Kick Vote & Header Names",
-             "Tap a player's name directly in Roster to trigger Kick Vote (or host kick).\n"
+             "Tap a player's name directly in Roster or under Party Name to instantly trigger Kick Vote.\n"
              "🛠️ runs custom commands; Info opens BombSquad DocUI; Actions offers Kick Vote,\n"
              "@ Mention, Mute Chat (restores missed chats!), Nick & Complaint.\n"
              "Settings -> Players Under Name shows clickable 3-per-row names below the Party title."),

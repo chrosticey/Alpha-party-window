@@ -1,20 +1,17 @@
 {
-  "version": "1.2-alpha",
+  "version": "1.3-alpha",
   "min_api": 9,
+  "changelog": "v1.3: Bigger Send & input bar, clean Kick Vote popup, right floating action dock, flush header player alignment, and pure clean static mode.",
   "added": [
-    "Cyber-Glass tabbed UI (Chat, Roster, Servers) & native Host DocUI integration",
-    "Universal & Romanized translator (Gujarati, Hindi, Arabizi, Russian, CJK & more)",
-    "Quick Icons popup with Favourites bar (Slot #1 sets the bar icon)",
-    "Chat bar animations (Neon Scanner, Synth Equalizer, Pulse Wave, Cyber Prism)",
-    "Custom Command Maker with {cid}, {acc}, {name}, {nick}, {aid}, {me}, {dur}",
-    "Auto Greet (V2/AID keyed), Player Lists manager & dated Chat Logs with rename",
-    "Custom Cyber Color Picker, Outline color sync & Players Under Name toggle",
-    "Update notification banner, Updates changelog window & Help guide"
+    "Right-side floating glass action dock (▲, ▼, 🌐, Copy, Reply) completely free of the Send button",
+    "Clean single-choice Kick Vote popup on player names (no emojis, no scrollbars)",
+    "Pure clean static mode (completely hides transparent bars and outlines when Chat Bar Anim is Off)"
   ],
   "changed": [
-    "Chat navigation & 4-word quoted Reply bar without covering messages",
-    "Unmuting a player restores their hidden session chats cleanly",
-    "Updates only install manually when you click Update"
+    "Stretched bottom dock (46px height) with a larger 76px Send button",
+    "Eliminated left-side spacing for chat text and input bar",
+    "Removed gap between header players block and main navigation tabs",
+    "Updated plugin version to 1.3"
   ],
-  "changelog": "Major Cyber-Glass overhaul with translation, animations, custom commands, and manual update controls."
+  "download_url": "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main/alpha_party_window.py"
 }

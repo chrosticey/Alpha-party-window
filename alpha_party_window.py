@@ -7,7 +7,7 @@ by @chrosticey
 Upgraded with Clear Glass UI, Interactive Tabs,
 Quick Icons Popup, Universal Translate, and v1.8+ Clean Moderation.
 
-Version : 1.2-alpha
+Version : 1.3
 API     : 9
 '''
 
@@ -44,7 +44,7 @@ import bauiv1lib.party as bascenev1lib_party
 from bauiv1lib.popup import PopupMenuWindow, PopupWindow
 from babase._general import CallPartial, CallStrict
 
-version_str = "1.2-alpha"
+version_str = "1.3"
 
 APW_REPO_URL     = "https://github.com/chrosticey/Alpha-party-window"
 APW_GITHUB_RAW   = "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main"
@@ -2603,42 +2603,44 @@ class AlphaPartyWindow(bui.Window):
         t_on = _apw_get_translate_cfg()["enabled"]
 
         # 1. Full-width horizontal bottom animation strip (spanning across above the bottom dock)
-        anim_h = 20
-        anim_y = self._full_scroll_bottom + 3
-        anim_x = self._left_x + 2
-        anim_w = self._content_w - 4
         anim_mode = _apw_get_chat_anim_style()
-
-        abg = _draw_panel_bg(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=(0.02, 0.04, 0.07), opacity=0.65)
-        abdrs = _draw_border(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=ol, opacity=0.38 if anim_mode != 'off' else 0.22, thickness=1.0)
-        self._anim_widgets.append(abg)
-        self._anim_widgets.extend(abdrs)
-        self._anim_track_borders = list(abdrs)
         self._anim_bars = []
         self._anim_xs = []
 
-        if anim_mode != 'off' and anim_w >= 80:
-            cnt_bars = 22
-            pad_x = 8.0
-            gap_x = 3.5
-            bar_w = max(3.5, (anim_w - pad_x * 2 - (cnt_bars - 1) * gap_x) / cnt_bars)
-            self._anim_bar_w = bar_w
-            self._anim_base_y = anim_y + 3.0
-            self._anim_phase = getattr(self, '_anim_phase', 0.0)
-            for i in range(cnt_bars):
-                bx = anim_x + pad_x + i * (bar_w + gap_x)
-                self._anim_xs.append(bx)
-                img = bui.imagewidget(
-                    parent=self._root_widget,
-                    position=(bx, anim_y + 3.0),
-                    size=(bar_w, 10.0),
-                    texture=bui.gettexture('softRect'),
-                    color=ol,
-                    opacity=0.45)
-                self._anim_bars.append(img)
-                self._anim_widgets.append(img)
-            self._step_chat_anim()
-            self._anim_timer = babase.AppTimer(0.09, babase.WeakCallStrict(self._step_chat_anim), repeat=True)
+        if anim_mode != 'off':
+            anim_h = 20
+            anim_y = self._full_scroll_bottom + 3
+            anim_x = self._left_x + 2
+            anim_w = self._content_w - 4
+
+            abg = _draw_panel_bg(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=(0.02, 0.04, 0.07), opacity=0.65)
+            abdrs = _draw_border(self._root_widget, anim_x, anim_y, anim_w, anim_h, color=ol, opacity=0.38, thickness=1.0)
+            self._anim_widgets.append(abg)
+            self._anim_widgets.extend(abdrs)
+            self._anim_track_borders = list(abdrs)
+
+            if anim_w >= 80:
+                cnt_bars = 22
+                pad_x = 8.0
+                gap_x = 3.5
+                bar_w = max(3.5, (anim_w - pad_x * 2 - (cnt_bars - 1) * gap_x) / cnt_bars)
+                self._anim_bar_w = bar_w
+                self._anim_base_y = anim_y + 3.0
+                self._anim_phase = getattr(self, '_anim_phase', 0.0)
+                for i in range(cnt_bars):
+                    bx = anim_x + pad_x + i * (bar_w + gap_x)
+                    self._anim_xs.append(bx)
+                    img = bui.imagewidget(
+                        parent=self._root_widget,
+                        position=(bx, anim_y + 3.0),
+                        size=(bar_w, 10.0),
+                        texture=bui.gettexture('softRect'),
+                        color=ol,
+                        opacity=0.45)
+                    self._anim_bars.append(img)
+                    self._anim_widgets.append(img)
+                self._step_chat_anim()
+                self._anim_timer = babase.AppTimer(0.09, babase.WeakCallStrict(self._step_chat_anim), repeat=True)
 
         # 2. Side Floating Action Deck (Docked externally to the right of the window)
         # Keeps navigation, copy, reply and auto-translate completely away from the Send button

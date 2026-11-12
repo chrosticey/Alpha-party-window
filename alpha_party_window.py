@@ -879,8 +879,6 @@ _APW_CHAT_ANIM_MODES = [
     ("equalizer", "🎵 Synth Equalizer"),
     ("wave",      "🌊 Pulse Wave"),
     ("spectrum",  "🌈 Cyber Prism"),
-    ("firefly",   "✨ Starlight Glow"),
-    ("matrix",    "💚 Cyber Matrix"),
     ("off",       "⬜ Off (Static)"),
 ]
 
@@ -2065,12 +2063,18 @@ class AlphaPopupMenu:
             w=c_width, h=c_height,
             color=_ol, opacity=0.80, thickness=1.5)
 
-        scroll = bui.scrollwidget(
-            parent=cnt, size=(c_width - 8, list_h),
-            position=(4 - c_width * 0.5, pad - c_height * 0.5),
-            color=(0, 0, 0), simple_culling_v=10)
-
-        col = bui.columnwidget(parent=scroll, border=0, margin=0)
+        if len(choices) <= visible:
+            content_parent = bui.containerwidget(
+                parent=cnt, size=(c_width - 8, list_h),
+                position=(4 - c_width * 0.5, pad - c_height * 0.5),
+                background=False)
+            col = bui.columnwidget(parent=content_parent, border=0, margin=0)
+        else:
+            scroll = bui.scrollwidget(
+                parent=cnt, size=(c_width - 8, list_h),
+                position=(4 - c_width * 0.5, pad - c_height * 0.5),
+                color=(0, 0, 0), highlight=False, border_opacity=0.0, simple_culling_v=10)
+            col = bui.columnwidget(parent=scroll, border=0, margin=0)
 
         def _make_cb(ch):
             def _cb():
@@ -2340,8 +2344,8 @@ class AlphaPartyWindow(bui.Window):
         INP_Y = -_hh + 8
         QUICK_W = 66
         ICON_BTN_W = 40
-        SEND_W = 66
-        BTN_H = 32
+        SEND_W = 76
+        BTN_H = 46
         GAP = 4
 
         self._bottom_dock = _draw_panel_bg(
@@ -2358,7 +2362,7 @@ class AlphaPartyWindow(bui.Window):
             parent=self._root_widget,
             position=(LEFT_X + 2, INP_Y),
             size=(QUICK_W, BTN_H),
-            label='Quick', text_scale=0.64,
+            label='Quick', text_scale=0.68,
             bg_color=(0.12, 0.18, 0.26),
             opacity=0.38,
             text_color=(0.88, 0.94, 1.0),
@@ -2397,10 +2401,10 @@ class AlphaPartyWindow(bui.Window):
         self._text_field = bui.textwidget(
             parent=self._root_widget,
             editable=True,
-            size=(field_box_w - 8, BTN_H),
-            position=(field_x + 4, INP_Y),
+            size=(field_box_w - 4, BTN_H),
+            position=(field_x + 2, INP_Y),
             text=draft_chat_text,
-            maxwidth=field_box_w - 18,
+            maxwidth=field_box_w - 10,
             shadow=0.3,
             flatness=1.0,
             description=babase.Lstr(resource=self._r + '.chatMessageText'),
@@ -2412,7 +2416,7 @@ class AlphaPartyWindow(bui.Window):
             size=(0, 0),
             position=(field_x + field_box_w * 0.5, INP_Y + BTN_H * 0.5),
             h_align='center', v_align='center',
-            scale=0.58,
+            scale=0.62,
             selectable=False,
             flatness=1.0,
             shadow=0.2,
@@ -2430,7 +2434,7 @@ class AlphaPartyWindow(bui.Window):
             parent=self._root_widget,
             position=(send_x, INP_Y),
             size=(SEND_W, BTN_H),
-            label='Send', text_scale=0.70,
+            label='Send', text_scale=0.76,
             bg_color=(0.10, 0.30, 0.20),
             opacity=0.45,
             text_color=(0.85, 1.0, 0.88),
@@ -2444,7 +2448,7 @@ class AlphaPartyWindow(bui.Window):
         self._emoji_borders = []
 
         self._full_scroll_bottom = INP_Y + BTN_H + 5
-        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 27
+        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 4
         self._scroll_top = TAB_Y - 5
         self._scroll_width = CONTENT_W
 
@@ -2588,35 +2592,6 @@ class AlphaPartyWindow(bui.Window):
                         edit=bw, size=(bar_w, h),
                         position=(getattr(self, '_anim_xs', [])[i], cy),
                         color=(r, g, b), opacity=0.55 + 0.35 * pulse)
-            elif mode == 'firefly':
-                for i, bw in enumerate(bars):
-                    twinkle = 0.5 + 0.5 * math.sin(t * 1.8 + i * 2.1) * math.cos(t * 0.9 - i * 1.3)
-                    h = 3.5 + twinkle * (max_h - 3.5)
-                    cy = base_y + (max_h - h) * (0.3 + 0.4 * math.sin(t * 0.5 + i * 0.7))
-                    col = (
-                        min(1.0, 0.95),
-                        min(1.0, 0.85 + 0.15 * twinkle),
-                        min(1.0, 0.35 + 0.55 * (1.0 - twinkle)),
-                    )
-                    bui.imagewidget(
-                        edit=bw, size=(bar_w, h),
-                        position=(getattr(self, '_anim_xs', [])[i], cy),
-                        color=col, opacity=0.25 + 0.70 * twinkle)
-            elif mode == 'matrix':
-                for i, bw in enumerate(bars):
-                    drop = (t * 1.4 + i * 0.42) % 3.0
-                    intensity = max(0.0, 1.0 - drop)
-                    h = 4.0 + intensity * (max_h - 4.0)
-                    cy = base_y + (max_h - h) * 0.5
-                    col = (
-                        min(1.0, 0.10 + 0.20 * intensity),
-                        min(1.0, 0.60 + 0.40 * intensity),
-                        min(1.0, 0.25 + 0.20 * intensity),
-                    )
-                    bui.imagewidget(
-                        edit=bw, size=(bar_w, h),
-                        position=(getattr(self, '_anim_xs', [])[i], cy),
-                        color=col, opacity=0.20 + 0.78 * intensity)
         except Exception:
             pass
 
@@ -3662,7 +3637,7 @@ class AlphaPartyWindow(bui.Window):
                 on_activate_call=babase.CallPartial(self._on_party_member_press, cid, is_host, row))
 
     def _on_player_name_press(self, client_id: int, is_host: bool, widget: Optional[bui.Widget] = None) -> None:
-        """Triggered when tapping a player's name in Roster: shows a popup with the Kick Vote option."""
+        """Triggered when tapping a player's name in Roster: shows a single Kick Vote popup option."""
         origin = widget if widget is not None else self._root_widget
         self._popup_party_member_client_id = client_id
         self._popup_party_member_is_host = is_host
@@ -3673,8 +3648,8 @@ class AlphaPartyWindow(bui.Window):
 
         AlphaPopupMenu(
             position=origin.get_screen_space_center(),
-            choices=["kick_vote", "actions"],
-            choices_display=[babase.Lstr(value=kick_label), babase.Lstr(value="⚙️ Actions Menu")],
+            choices=["kick_vote"],
+            choices_display=[babase.Lstr(value=kick_label)],
             current_choice="kick_vote", delegate=self)
 
     def _execute_kick_action(self, client_id: int, is_host: bool) -> None:
@@ -4048,7 +4023,7 @@ class AlphaPartyWindow(bui.Window):
             else:
                 base_col = (0.90, 0.95, 1.00)
 
-            row_w = self._scroll_width - 10
+            row_w = self._scroll_width - 6
             row = bui.containerwidget(parent=self._columnwidget, size=(row_w, 22), background=False)
             hit = bui.buttonwidget(
                 parent=row, position=(0, 0), size=(row_w, 22),
@@ -4057,12 +4032,12 @@ class AlphaPartyWindow(bui.Window):
             txt = bui.textwidget(
                 parent=row,
                 text=babase.Lstr(value=msg),
-                position=(8, 11),
+                position=(1, 11),
                 h_align='left', v_align='center',
                 size=(0, 0),
                 scale=0.62,
                 color=base_col,
-                maxwidth=row_w - 18,
+                maxwidth=row_w - 6,
                 shadow=0.3, flatness=1.0,
                 draw_controller=hit)
 
@@ -7060,10 +7035,10 @@ class AlphaPartyWindow(bui.Window):
              "Tap 🌐 on the right side dock to toggle whole-chat translation, or translate one chat via tap.\n"
              "Settings -> Translate sets From (left) & Into (right), including Romanized chat."),
             ("✨ Chat Bar Animations & Colors",
-             "Settings -> Chat Bar Anim picks Neon Scanner, Synth Equalizer, Pulse Wave, Cyber Prism, Starlight Glow, Cyber Matrix, or Off.\n"
+             "Settings -> Chat Bar Anim picks Neon Scanner, Synth Equalizer, Pulse Wave, Cyber Prism, or Off.\n"
              "Settings -> Colors sets Window presets, Sync Outlines toggle, Roster/Nick colors & Colorful Chat."),
             ("👥 Roster Controls, Kick Vote & Header Names",
-             "Tap a player's name directly in Roster or under Party Name to instantly trigger Kick Vote.\n"
+             "Tap a player's name directly in Roster or under Party Name to open a Kick Vote popup.\n"
              "🛠️ runs custom commands; Info opens BombSquad DocUI; Actions offers Kick Vote,\n"
              "@ Mention, Mute Chat (restores missed chats!), Nick & Complaint.\n"
              "Settings -> Players Under Name shows clickable 3-per-row names below the Party title."),

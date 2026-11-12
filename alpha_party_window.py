@@ -2110,8 +2110,8 @@ class AlphaPartyWindow(bui.Window):
         self._width = 520
 
         uiscale = bui.app.ui_v1.uiscale
-        self._height = (390 if uiscale is babase.UIScale.SMALL else
-                        500 if uiscale is babase.UIScale.MEDIUM else 620)
+        self._height = (380 if uiscale is babase.UIScale.SMALL else
+                        490 if uiscale is babase.UIScale.MEDIUM else 620)
 
         self._bg_color = babase.app.config.get("PartyWindow_Main_Color", (0.25, 0.45, 0.35))
         if not isinstance(self._bg_color, (list, tuple)) or len(self._bg_color) != 3:
@@ -2130,10 +2130,10 @@ class AlphaPartyWindow(bui.Window):
             parent=bui.get_special_widget('overlay_stack'),
             on_outside_click_call=self.close_with_sound,
             scale_origin_stack_offset=origin,
-            scale=(1.95 if uiscale is babase.UIScale.SMALL else
-                   1.35 if uiscale is babase.UIScale.MEDIUM else 1.0),
-            stack_offset=(0, -10) if uiscale is babase.UIScale.SMALL else (
-                240, 0) if uiscale is babase.UIScale.MEDIUM else (330, 20)))
+            scale=(1.75 if uiscale is babase.UIScale.SMALL else
+                   1.30 if uiscale is babase.UIScale.MEDIUM else 1.0),
+            stack_offset=((180, -6) if uiscale is babase.UIScale.SMALL else
+                          (240, 0) if uiscale is babase.UIScale.MEDIUM else (330, 20))))
 
         _r, _g, _b = self._bg_color
         _OL = _apw_compute_outline_color(self._bg_color)
@@ -2335,11 +2335,11 @@ class AlphaPartyWindow(bui.Window):
             border_thickness=1.5,
             on_activate_call=babase.CallPartial(self._switch_tab, "servers"))
 
-        INP_Y = -_hh + 7
-        QUICK_W = 70
-        ICON_BTN_W = 44
-        SEND_W = 70
-        BTN_H = 38
+        INP_Y = -_hh + 12
+        QUICK_W = 66
+        ICON_BTN_W = 40
+        SEND_W = 66
+        BTN_H = 34
         GAP = 4
 
         self._bottom_dock = _draw_panel_bg(
@@ -2356,7 +2356,7 @@ class AlphaPartyWindow(bui.Window):
             parent=self._root_widget,
             position=(LEFT_X + 2, INP_Y),
             size=(QUICK_W, BTN_H),
-            label='Quick', text_scale=0.66,
+            label='Quick', text_scale=0.64,
             bg_color=(0.12, 0.18, 0.26),
             opacity=0.38,
             text_color=(0.88, 0.94, 1.0),
@@ -2410,7 +2410,7 @@ class AlphaPartyWindow(bui.Window):
             size=(0, 0),
             position=(field_x + field_box_w * 0.5, INP_Y + BTN_H * 0.5),
             h_align='center', v_align='center',
-            scale=0.60,
+            scale=0.58,
             selectable=False,
             flatness=1.0,
             shadow=0.2,
@@ -2428,7 +2428,7 @@ class AlphaPartyWindow(bui.Window):
             parent=self._root_widget,
             position=(send_x, INP_Y),
             size=(SEND_W, BTN_H),
-            label='Send', text_scale=0.72,
+            label='Send', text_scale=0.70,
             bg_color=(0.10, 0.30, 0.20),
             opacity=0.45,
             text_color=(0.85, 1.0, 0.88),
@@ -2442,7 +2442,7 @@ class AlphaPartyWindow(bui.Window):
         self._emoji_borders = []
 
         self._full_scroll_bottom = INP_Y + BTN_H + 6
-        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 31
+        self._chat_nav_scroll_bottom = self._full_scroll_bottom + 34
         self._scroll_top = TAB_Y - 5
         self._scroll_width = CONTENT_W
 
@@ -2596,9 +2596,9 @@ class AlphaPartyWindow(bui.Window):
         ol = getattr(self, '_outline_color', (0.4, 1.0, 0.5))
         t_on = _apw_get_translate_cfg()["enabled"]
         nw = 194
-        nh = 26
+        nh = 24
         nx = self._right_x - nw - 6
-        ny = self._full_scroll_bottom + 4
+        ny = self._full_scroll_bottom + 6
 
         ax = self._left_x + 6
         aw = max(40, (nx - 6) - ax)
@@ -2643,17 +2643,17 @@ class AlphaPartyWindow(bui.Window):
 
         up_gb = GlassButton(
             parent=self._root_widget, position=(nx + 3, btn_y), size=(26, btn_h),
-            label='▲', text_scale=0.52, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
+            label='▲', text_scale=0.50, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
             text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.60, border_thickness=1.0,
             on_activate_call=babase.CallPartial(self._nav_chat_msg, -1))
         dn_gb = GlassButton(
             parent=self._root_widget, position=(nx + 32, btn_y), size=(26, btn_h),
-            label='▼', text_scale=0.52, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
+            label='▼', text_scale=0.50, bg_color=(0.10, 0.16, 0.24), opacity=0.55,
             text_color=(0.75, 0.92, 1.0), border=True, border_color=ol, border_opacity=0.60, border_thickness=1.0,
             on_activate_call=babase.CallPartial(self._nav_chat_msg, 1))
         tr_gb = GlassButton(
             parent=self._root_widget, position=(nx + 61, btn_y), size=(30, btn_h),
-            label='🌐', text_scale=0.54,
+            label='🌐', text_scale=0.52,
             bg_color=(0.12, 0.38, 0.24) if t_on else (0.10, 0.14, 0.20),
             opacity=0.72 if t_on else 0.48,
             text_color=(0.70, 1.0, 0.80) if t_on else (0.72, 0.82, 0.92),
@@ -2662,12 +2662,12 @@ class AlphaPartyWindow(bui.Window):
             on_activate_call=self._toggle_whole_chat_translate)
         cp_gb = GlassButton(
             parent=self._root_widget, position=(nx + 94, btn_y), size=(46, btn_h),
-            label='Copy', text_scale=0.50, bg_color=(0.12, 0.24, 0.36), opacity=0.55,
+            label='Copy', text_scale=0.48, bg_color=(0.12, 0.24, 0.36), opacity=0.55,
             text_color=(0.85, 0.95, 1.0), border=True, border_color=(0.45, 0.80, 1.0), border_opacity=0.70, border_thickness=1.0,
             on_activate_call=self._copy_selected_chat_msg)
         rp_gb = GlassButton(
             parent=self._root_widget, position=(nx + 143, btn_y), size=(48, btn_h),
-            label='Reply', text_scale=0.50, bg_color=(0.12, 0.32, 0.22), opacity=0.55,
+            label='Reply', text_scale=0.48, bg_color=(0.12, 0.32, 0.22), opacity=0.55,
             text_color=(0.85, 1.0, 0.88), border=True, border_color=ol, border_opacity=0.75, border_thickness=1.0,
             on_activate_call=self._reply_selected_chat_msg)
 
@@ -3544,12 +3544,16 @@ class AlphaPartyWindow(bui.Window):
 
             if has_nick:
                 name_max_w = max(80, avail_w - 75)
-                bui.textwidget(
+                nw = bui.textwidget(
                     parent=row, position=(12, 34), size=(0, 0),
                     h_align='left', v_align='center',
                     text=babase.Lstr(value=name_str),
                     color=(1.0, 0.9, 0.4) if is_host else player_col,
-                    scale=0.68, maxwidth=name_max_w)
+                    scale=0.68, maxwidth=name_max_w,
+                    selectable=True, click_activate=True)
+                bui.textwidget(
+                    edit=nw,
+                    on_activate_call=babase.CallPartial(self._on_player_name_press, cid, is_host, nw))
                 try:
                     raw_w = float(bui.get_string_width(name_str, suppress_warning=True)) * 0.68
                 except Exception:
@@ -3564,12 +3568,16 @@ class AlphaPartyWindow(bui.Window):
                     color=nick_col,
                     scale=0.62, maxwidth=nick_max_w)
             else:
-                bui.textwidget(
+                nw = bui.textwidget(
                     parent=row, position=(12, 34), size=(0, 0),
                     h_align='left', v_align='center',
                     text=babase.Lstr(value=name_str),
                     color=(1.0, 0.9, 0.4) if is_host else player_col,
-                    scale=0.68, maxwidth=avail_w)
+                    scale=0.68, maxwidth=avail_w,
+                    selectable=True, click_activate=True)
+                bui.textwidget(
+                    edit=nw,
+                    on_activate_call=babase.CallPartial(self._on_player_name_press, cid, is_host, nw))
 
             cid_tag = "HOST" if is_host else f"CID: {cid}"
             bui.textwidget(
@@ -3602,6 +3610,78 @@ class AlphaPartyWindow(bui.Window):
                 text_color=(0.90, 0.95, 1.0),
                 border=True, border_color=ol, border_opacity=0.70, border_thickness=1.2,
                 on_activate_call=babase.CallPartial(self._on_party_member_press, cid, is_host, row))
+
+    def _on_player_name_press(self, client_id: int, is_host: bool, widget: Optional[bui.Widget] = None) -> None:
+        """Triggered when tapping a player's name in Roster: offers Kick Vote (or host DocUI if present)."""
+        origin = widget if widget is not None else self._root_widget
+        try:
+            classic = bui.app.classic
+            if classic is not None and hasattr(classic, 'host_ui'):
+                browse = classic.host_ui.get_client_page_browse(client_id)
+                if browse is None and hasattr(classic.host_ui, 'get_client_page'):
+                    browse = classic.host_ui.get_client_page(client_id)
+                if browse is not None:
+                    from bauiv1lib.hostdocui import show_host_docui_page
+                    show_host_docui_page(browse, origin_widget=origin)
+                    self.close()
+                    return
+        except Exception:
+            pass
+
+        self._popup_party_member_client_id = client_id
+        self._popup_party_member_is_host = is_host
+        self._popup_type = "partyMemberNamePress"
+
+        is_fg_host = (bs.get_foreground_host_session() is not None)
+        kick_label = "👢 Kick Player" if is_fg_host else "🗳️ Kick Vote"
+
+        AlphaPopupMenu(
+            position=origin.get_screen_space_center(),
+            choices=["kick_vote", "actions"],
+            choices_display=[babase.Lstr(value=kick_label), babase.Lstr(value="⚙️ Actions Menu")],
+            current_choice="kick_vote", delegate=self)
+
+    def _execute_kick_action(self, client_id: int, is_host: bool) -> None:
+        """Execute kick vote or direct host kick matching native BombSquad logic."""
+        if is_host or client_id == -1:
+            try:
+                bui.getsound('error').play()
+            except Exception:
+                pass
+            bui.screenmessage("Cannot kick host.", color=(1.0, 0.35, 0.35))
+            return
+
+        try:
+            classic = bui.app.classic
+            kick_request = classic.host_ui.get_kick_request(client_id) if (classic and hasattr(classic, 'host_ui')) else None
+            if kick_request is not None:
+                from bauiv1lib.hostdocui import show_host_docui_window
+                import bacommon.hostui as hui
+                import bacommon.docui.v2 as dui2
+                from bacommon.langstr import LangStrSpecValue
+                self.close()
+                show_host_docui_window(
+                    hui.Button(
+                        label=LangStrSpecValue.literal(''),
+                        placement=hui.ButtonPlacement.PARTY_MENU,
+                        request=kick_request,
+                        layout=dui2.WindowLayout.WIDE,
+                    )
+                )
+                return
+        except Exception:
+            pass
+
+        try:
+            result = bs.disconnect_client(client_id, ban_time=5 * 60)
+            if not result:
+                try:
+                    bui.getsound('error').play()
+                except Exception:
+                    pass
+                bui.screenmessage("Kick vote not available.", color=(1.0, 0.40, 0.40))
+        except Exception:
+            babase.print_exception("[APW] Kick vote execution error")
 
     def _on_header_player_press(self, client_id: int, is_host: bool, widget: Optional[bui.Widget] = None) -> None:
         """Click handler for names under Party Name: opens native Host DocUI if offered, else Actions."""
@@ -4092,8 +4172,12 @@ class AlphaPartyWindow(bui.Window):
         ag_map = _apw_get_autogreet_players()
         in_ag = _apw_find_autogreet_key(aid, account, ag_map) is not None
 
-        choices = ["@ this guy", "mute_chat", "set_nick", "toggle_autogreet", "complaint"]
+        is_fg_host = (bs.get_foreground_host_session() is not None)
+        kick_label = "👢 Kick Player" if is_fg_host else "🗳️ Kick Vote"
+
+        choices = ["kick_vote", "@ this guy", "mute_chat", "set_nick", "toggle_autogreet", "complaint"]
         choices_display = [
+            babase.Lstr(value=kick_label),
             _getTransText("Mention_this_guy", isBaLstr=True),
             babase.Lstr(value="🔊 Unmute Chat" if _is_chat_muted else "🔇 Mute Chat"),
             babase.Lstr(value="🏷️ Set Nick"),
@@ -5252,9 +5336,19 @@ class AlphaPartyWindow(bui.Window):
                     pass
             elif choice == "open_cmd_maker":
                 self._open_command_maker_window()
+        elif self._popup_type == "partyMemberNamePress":
+            cid = self._popup_party_member_client_id
+            is_host = getattr(self, '_popup_party_member_is_host', False)
+            if choice == "kick_vote":
+                self._execute_kick_action(cid, is_host)
+            elif choice == "actions":
+                self._on_party_member_press(cid, is_host, popup_window.root_widget)
         elif self._popup_type == "partyMemberPress":
             cid = self._popup_party_member_client_id
-            if choice == "info":
+            is_host = getattr(self, '_popup_party_member_is_host', False)
+            if choice == "kick_vote":
+                self._execute_kick_action(cid, is_host)
+            elif choice == "info":
                 self._on_player_info_press(cid, widget=popup_window.root_widget)
             elif choice == "@ this guy":
                 acc = self._getObjectByID("account", cid)
@@ -6933,9 +7027,10 @@ class AlphaPartyWindow(bui.Window):
             ("✨ Chat Bar Animations & Colors",
              "Settings -> Chat Bar Anim picks Neon Scanner, Synth Equalizer, Pulse Wave, Prism or Off.\n"
              "Settings -> Colors sets Window presets, Sync Outlines toggle, Roster/Nick colors & Colorful Chat."),
-            ("👥 Roster Controls & Header Names",
-             "🛠️ runs custom commands; Info opens BombSquad's DocUI popup when offered by host;\n"
-             "Actions has @ Mention, Mute Chat (unmuting restores hidden chats!), Nick & Complaint.\n"
+            ("👥 Roster Controls, Kick Vote & Header Names",
+             "Tap a player's name directly in Roster to trigger Kick Vote (or host kick).\n"
+             "🛠️ runs custom commands; Info opens BombSquad DocUI; Actions offers Kick Vote,\n"
+             "@ Mention, Mute Chat (restores missed chats!), Nick & Complaint.\n"
              "Settings -> Players Under Name shows clickable 3-per-row names below the Party title."),
             ("🛠️ Custom Command Maker ({var})",
              "Create Instant or Draft commands with {cid}, {acc}, {name}, {nick}, {aid}, {me}, {dur} (days).\n"

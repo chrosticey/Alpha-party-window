@@ -7,7 +7,7 @@ by @chrosticey
 Upgraded with Clear Glass UI, Interactive Tabs,
 Quick Icons Popup, Universal Translate, and v1.8+ Clean Moderation.
 
-Version : 1.3-alpha
+Version : 1.31
 API     : 9
 '''
 
@@ -44,7 +44,7 @@ import bauiv1lib.party as bascenev1lib_party
 from bauiv1lib.popup import PopupMenuWindow, PopupWindow
 from babase._general import CallPartial, CallStrict
 
-version_str = "1.3"
+version_str = "1.31"
 
 APW_REPO_URL     = "https://github.com/chrosticey/Alpha-party-window"
 APW_GITHUB_RAW   = "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main"
@@ -2277,6 +2277,8 @@ class AlphaPartyWindow(bui.Window):
         self._header_players_box_borders: List[bui.Widget] = []
         self._header_players_widgets: List[bui.Widget] = []
         self._header_players_rows: int = -1
+        self._header_name_mode: str = babase.app.config.get('APW_Header_Name_Mode', 'profile')
+        self._header_refresh_gb: Optional[GlassButton] = None
 
         self.ping_widget = None
         _babase.ping_widget = None
@@ -2489,6 +2491,8 @@ class AlphaPartyWindow(bui.Window):
         self._build_chat_nav_bar()
 
         _apw_active_window_ref = weakref.ref(self)
+        self._refresh_header_players(force=True)
+
         msgs = _apw_sync_session_history()
         visible_msgs = [m for m in msgs if not self._is_msg_muted(m)]
         if visible_msgs:
@@ -2497,9 +2501,12 @@ class AlphaPartyWindow(bui.Window):
         else:
             self._render_empty_chat_banner()
 
+        self._scroll_to_bottom()
+        babase.apptimer(0.05, babase.WeakCallStrict(self._scroll_to_bottom))
+        babase.apptimer(0.15, babase.WeakCallStrict(self._scroll_to_bottom))
+
         self._update_timer = babase.AppTimer(1.0, babase.WeakCallStrict(self._update), repeat=True)
         self._ping_hint_timer = babase.AppTimer(0.15, babase.WeakCallStrict(self._refresh_input_ping_hint), repeat=True)
-        self._refresh_header_players(force=True)
         self._update()
 
     def _destroy_chat_nav_bar(self) -> None:
@@ -2903,6 +2910,8 @@ class AlphaPartyWindow(bui.Window):
                     self._add_msg(msg, ignore_mute=True)
             else:
                 self._render_empty_chat_banner()
+            self._scroll_to_bottom()
+            babase.apptimer(0.05, babase.WeakCallStrict(self._scroll_to_bottom))
         except Exception:
             pass
 
@@ -2974,6 +2983,8 @@ class AlphaPartyWindow(bui.Window):
                     self._add_msg(msg, ignore_mute=True)
             else:
                 self._render_empty_chat_banner()
+            self._scroll_to_bottom()
+            babase.apptimer(0.05, babase.WeakCallStrict(self._scroll_to_bottom))
         elif tab == "players":
             self._destroy_chat_nav_bar()
             self._set_scroll_bottom(self._full_scroll_bottom)
@@ -3314,6 +3325,27 @@ class AlphaPartyWindow(bui.Window):
         except Exception:
             bui.screenmessage(APW_REPO_URL, color=(0.65, 0.90, 1.0))
 
+    def _scroll_to_bottom(self) -> None:
+        if getattr(self, 'active_tab', 'chat') != "chat":
+            return
+        cw = getattr(self, '_columnwidget', None)
+        msgs = getattr(self, '_chat_texts_haxx', None)
+        if cw is not None and msgs:
+            try:
+                bui.containerwidget(edit=cw, visible_child=msgs[-1])
+            except Exception:
+                pass
+
+    def _toggle_header_name_mode(self) -> None:
+        curr = getattr(self, '_header_name_mode', babase.app.config.get('APW_Header_Name_Mode', 'profile'))
+        nxt = 'account' if curr == 'profile' else 'profile'
+        self._header_name_mode = nxt
+        babase.app.config['APW_Header_Name_Mode'] = nxt
+        babase.app.config.commit()
+        mode_label = "Account Names" if nxt == 'account' else "Profile Names"
+        bui.screenmessage(f"Showing: {mode_label}", color=(0.4, 0.85, 1.0))
+        self._refresh_header_players(force=True)
+
     def _refresh_header_players(self, force: bool = False) -> None:
         hy = getattr(self, '_header_y', None)
         base_tab_y = getattr(self, '_base_tab_y', None)
@@ -3323,10 +3355,12 @@ class AlphaPartyWindow(bui.Window):
             show_p = _apw_show_header_players()
             show_upd = _apw_should_show_update_banner()
             roster = (bs.get_game_roster() or []) if show_p else []
+            header_name_mode = getattr(self, '_header_name_mode', babase.app.config.get('APW_Header_Name_Mode', 'profile'))
             sig = (
                 show_p,
                 show_upd,
                 _apw_update_state.get("remote_version", ""),
+                header_name_mode,
                 tuple(
                     (
                         e.get('client_id'),
@@ -3346,6 +3380,12 @@ class AlphaPartyWindow(bui.Window):
                 except Exception:
                     pass
             self._header_players_widgets = []
+            if getattr(self, '_header_refresh_gb', None) is not None:
+                try:
+                    self._header_refresh_gb.widget.delete()
+                except Exception:
+                    pass
+                self._header_refresh_gb = None
             for w in getattr(self, '_header_players_box_borders', []):
                 try:
                     w.delete()
@@ -3391,24 +3431,43 @@ class AlphaPartyWindow(bui.Window):
                     x=lx, y=box_y, w=cw, h=box_h,
                     color=ol, opacity=0.45, thickness=1.2)
 
+                btn_w = 22
+                btn_h = min(20, max(16, box_h - 4))
+                btn_x = lx + cw - btn_w - 4
+                btn_y = box_y + (box_h - btn_h) * 0.5
+                self._header_refresh_gb = GlassButton(
+                    parent=self._root_widget,
+                    position=(btn_x, btn_y),
+                    size=(btn_w, btn_h),
+                    label='🔄', text_scale=0.60,
+                    bg_color=(0.10, 0.16, 0.24), opacity=0.55,
+                    text_color=(0.80, 0.95, 1.0),
+                    border=True, border_color=ol, border_opacity=0.75, border_thickness=1.0,
+                    on_activate_call=self._toggle_header_name_mode)
+                self._header_players_widgets.append(self._header_refresh_gb.widget)
+
                 if n == 0:
                     nw = bui.textwidget(
                         parent=self._root_widget,
-                        position=(lx + cw * 0.5, box_y + box_h * 0.5), size=(0, 0),
+                        position=(lx + (cw - btn_w - 8) * 0.5, box_y + box_h * 0.5), size=(0, 0),
                         h_align='center', v_align='center',
                         text='No players connected', scale=0.45, color=(0.62, 0.72, 0.84))
                     self._header_players_widgets.append(nw)
                 else:
-                    cell_w = (cw - 10) / cols
+                    cell_w = (cw - btn_w - 12) / cols
                     for idx, entry in enumerate(roster):
                         cid = entry.get('client_id', -1)
                         v2_id = entry.get('display_string', 'Unknown')
                         ps = entry.get('players') or []
+                        pn = ""
                         if ps:
                             pn = ", ".join(str(p.get('name_full') or p.get('name') or '').strip() for p in ps if (p.get('name_full') or p.get('name')))
-                            pname = pn or v2_id
+
+                        if header_name_mode == 'account':
+                            pname = v2_id if v2_id else (pn or 'Unknown')
                         else:
-                            pname = v2_id
+                            pname = pn if pn else (v2_id or 'Unknown')
+
                         is_host = (cid == -1)
                         r_i = idx // cols
                         c_i = idx % cols
@@ -3505,6 +3564,9 @@ class AlphaPartyWindow(bui.Window):
                 edit=self._scrollwidget,
                 position=(lx, self._chat_nav_scroll_bottom if self.active_tab == "chat" else sb),
                 size=(self._scroll_width, max(60, self._scroll_top - (self._chat_nav_scroll_bottom if self.active_tab == "chat" else sb))))
+            if getattr(self, 'active_tab', None) == "chat":
+                self._scroll_to_bottom()
+                babase.apptimer(0.05, babase.WeakCallStrict(self._scroll_to_bottom))
         except Exception:
             pass
 
@@ -3650,8 +3712,8 @@ class AlphaPartyWindow(bui.Window):
 
         AlphaPopupMenu(
             position=origin.get_screen_space_center(),
-            choices=["kick_vote"],
-            choices_display=[babase.Lstr(value=kick_label)],
+            choices=["kick_vote", "@ this guy"],
+            choices_display=[babase.Lstr(value=kick_label), babase.Lstr(value="Mention")],
             current_choice="kick_vote", delegate=self)
 
     def _execute_kick_action(self, client_id: int, is_host: bool) -> None:
@@ -3708,8 +3770,8 @@ class AlphaPartyWindow(bui.Window):
 
         AlphaPopupMenu(
             position=origin.get_screen_space_center(),
-            choices=["kick_vote"],
-            choices_display=[babase.Lstr(value=kick_label)],
+            choices=["kick_vote", "@ this guy"],
+            choices_display=[babase.Lstr(value=kick_label), babase.Lstr(value="Mention")],
             current_choice="kick_vote", delegate=self)
 
     def _on_player_info_press(self, client_id: int, widget: Optional[bui.Widget] = None) -> None:
@@ -5353,6 +5415,18 @@ class AlphaPartyWindow(bui.Window):
             is_host = getattr(self, '_popup_party_member_is_host', False)
             if choice == "kick_vote":
                 self._execute_kick_action(cid, is_host)
+            elif choice == "@ this guy":
+                acc = self._getObjectByID("account", cid)
+                if not acc:
+                    pls = self._getObjectByID("players", cid)
+                    if pls and isinstance(pls, list) and pls:
+                        acc = pls[0].get("name")
+                if acc:
+                    if self.active_tab != "chat":
+                        self._switch_tab("chat")
+                    bui.textwidget(edit=self._text_field, text=f"@{acc} ")
+                    self._refresh_input_ping_hint()
+                    bui.containerwidget(edit=self._root_widget, selected_child=self._text_field)
             elif choice == "actions":
                 self._on_party_member_press(cid, is_host, popup_window.root_widget)
         elif self._popup_type == "partyMemberPress":

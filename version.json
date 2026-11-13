@@ -1,17 +1,19 @@
 {
-  "version": "1.3-alpha",
+  "version": "1.31-alpha",
   "min_api": 9,
-  "changelog": "v1.3: Bigger Send & input bar, clean Kick Vote popup, right floating action dock, flush header player alignment, and pure clean static mode.",
+  "download_url": "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main/alpha_party_window.py",
+  "changelog": "Alpha Party Window v1.31-alpha: Mobile-optimized external action dock, auto-anchored bottom chat scroll, header player name cycling (profile vs account), mention action in quick popup, and pure static mode.",
   "added": [
-    "Right-side floating glass action dock (▲, ▼, 🌐, Copy, Reply) completely free of the Send button",
-    "Clean single-choice Kick Vote popup on player names (no emojis, no scrollbars)",
-    "Pure clean static mode (completely hides transparent bars and outlines when Chat Bar Anim is Off)"
+    "External floating side action dock (prevents misclicks on mobile)",
+    "Header player name cycle button (🔄) to switch between Profile Names and Account Names",
+    "Direct @ Mention option when clicking any player under the Party Name or Roster",
+    "Pure static mode with complete bar & border hiding when animations are turned off",
+    "Auto-scroll anchor to guarantee newest chats are never clipped on window open"
   ],
   "changed": [
-    "Stretched bottom dock (46px height) with a larger 76px Send button",
-    "Eliminated left-side spacing for chat text and input bar",
-    "Removed gap between header players block and main navigation tabs",
-    "Updated plugin version to 1.3"
-  ],
-  "download_url": "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main/alpha_party_window.py"
+    "Stretched bottom input text bar and enlarged Send button for smooth thumb tapping",
+    "Clean non-emoji Kick Vote / Kick Player popup dialog",
+    "Zero left-margin text alignment in chat and text bar",
+    "Removed scrollable dialog clutter on player actions"
+  ]
 }

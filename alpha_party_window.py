@@ -7,7 +7,7 @@ by @chrosticey
 Upgraded with Clear Glass UI, Interactive Tabs,
 Quick Icons Popup, Universal Translate, and v1.8+ Clean Moderation.
 
-Version : 1.31
+Version : 1.31-alpha
 API     : 9
 '''
 
@@ -44,7 +44,7 @@ import bauiv1lib.party as bascenev1lib_party
 from bauiv1lib.popup import PopupMenuWindow, PopupWindow
 from babase._general import CallPartial, CallStrict
 
-version_str = "1.31"
+version_str = "1.31-alpha"
 
 APW_REPO_URL     = "https://github.com/chrosticey/Alpha-party-window"
 APW_GITHUB_RAW   = "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main"

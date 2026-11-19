@@ -2,6 +2,7 @@
 """
 Alpha Party Window - One-Click Installer
 Installs or updates alpha_party_window.py into your BombSquad user mods directory.
+Version: 1.32
 Repo: https://github.com/chrosticey/Alpha-party-window
 """
 
@@ -29,7 +30,7 @@ def get_mods_dir() -> str:
     if system == "Darwin":
         return os.path.join(home, "Library", "Application Support", "BombSquad", "mods")
 
-    # 3. Android (Termux / Pydroid / generic terminal)
+    # 3. Android (Termux / Pydroid / mobile shell)
     android_candidates = [
         "/storage/emulated/0/BombSquad/mods",
         "/sdcard/BombSquad/mods",
@@ -45,7 +46,7 @@ def get_mods_dir() -> str:
 
 def main() -> None:
     print("=" * 60)
-    print("  🚀 Alpha Party Window v1.31-alpha Installer")
+    print("  🚀 Alpha Party Window v1.32 Installer")
     print("=" * 60)
 
     target_dir = get_mods_dir()
@@ -58,7 +59,7 @@ def main() -> None:
     try:
         req = urllib.request.Request(
             RAW_URL,
-            headers={"User-Agent": "Mozilla/5.0 (AlphaPartyWindowInstaller/1.31-alpha)"}
+            headers={"User-Agent": "Mozilla/5.0 (AlphaPartyWindowInstaller/1.32)"}
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             content = resp.read()
@@ -72,7 +73,7 @@ def main() -> None:
         print("\n" + "=" * 60)
         print("  ✅ Installation Successful!")
         print(f"  Saved to: {target_path}")
-        print("  Restart BombSquad to enjoy Alpha Party Window v1.31-alpha!")
+        print("  Restart BombSquad to enjoy Alpha Party Window v1.32!")
         print("=" * 60)
     except Exception as e:
         print("\n" + "=" * 60)

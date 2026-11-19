@@ -1,19 +1,20 @@
 {
-  "version": "1.31-alpha",
+  "version": "1.32",
   "min_api": 9,
   "download_url": "https://raw.githubusercontent.com/chrosticey/Alpha-party-window/main/alpha_party_window.py",
-  "changelog": "Alpha Party Window v1.31-alpha: Mobile-optimized external action dock, auto-anchored bottom chat scroll, header player name cycling (profile vs account), mention action in quick popup, and pure static mode.",
+  "changelog": "Alpha Party Window v1.32: Fixed buried chat messages with 24px bottom spacer, moved animation strip to top header, added 3-way Mention options (Profile, Account, Nickname), and upgraded header cycle button to 3 modes.",
   "added": [
-    "External floating side action dock (prevents misclicks on mobile)",
-    "Header player name cycle button (🔄) to switch between Profile Names and Account Names",
-    "Direct @ Mention option when clicking any player under the Party Name or Roster",
-    "Pure static mode with complete bar & border hiding when animations are turned off",
-    "Auto-scroll anchor to guarantee newest chats are never clipped on window open"
+    "3-way Mention popup: choose to mention by Profile Name, Account Tag, or Custom Nickname",
+    "Header player names 3-way cycle button (🔄): switch between Profile Names, Account Names, and Nicknames",
+    "24px bottom chat spacer anchor: ensures latest chat messages are never buried under UI elements or cut off",
+    "Top header animation strip: visualizer moved to top of chat panel so bottom chat messages are 100% unobstructed",
+    "External floating side dock: keeps navigation, copy, reply and translation safe from mobile misclicks",
+    "Pure static mode: cleanly hides animation bars and borders when animations are set to Off"
   ],
   "changed": [
-    "Stretched bottom input text bar and enlarged Send button for smooth thumb tapping",
-    "Clean non-emoji Kick Vote / Kick Player popup dialog",
-    "Zero left-margin text alignment in chat and text bar",
-    "Removed scrollable dialog clutter on player actions"
+    "Stretched bottom input text bar and enlarged Send button for mobile touch comfort",
+    "Clean non-emoji Kick Vote / Kick Player popup options",
+    "Zero left-margin text alignment across chat rows and input field",
+    "Removed pulse wave animation mode for smoother visualizer rendering"
   ]
 }
